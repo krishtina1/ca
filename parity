@@ -1,0 +1,30 @@
+
+module parity_generator (
+    input wire x, y, z,       // 3-bit input
+    output wire even_parity,  // Even parity output
+    output wire odd_parity    // Odd parity output
+);
+    assign even_parity = x ^ y ^ z;
+    assign odd_parity = ~even_parity;
+endmodule
+
+`timescale 1ns/1ps
+`include "parity.v"
+module parity_tb;
+    reg x, y, z;
+    wire even_parity, odd_parity;
+    parity_generator uut(x, y, z, even_parity, odd_parity);
+    initial begin
+        $dumpfile("parity.vcd");
+        $dumpvars(0, parity_tb);
+        x=0; y=0; z=0; #10;
+        x=0; y=0; z=1; #10;
+        x=0; y=1; z=0; #10;
+        x=0; y=1; z=1; #10;
+        x=1; y=0; z=0; #10;
+        x=1; y=0; z=1; #10;
+        x=1; y=1; z=0; #10;
+        x=1; y=1; z=1; #10;
+        $finish;
+    end
+endmodule
