@@ -1,0 +1,68 @@
+And gate
+module andgate(a, b, out);
+    input a, b;
+    output out;
+    and a1(out, a, b);
+endmodule
+`include "andgate.v"
+module andgate_tb;
+    reg a, b;
+    wire out;
+    andgate a1 (a,b,out );
+    initial begin
+        $dumpfile("andgate.vcd");   
+        $dumpvars(0, andgate_tb);   
+        a = 0; b = 0; #10; 
+        a = 0; b = 1; #10; 
+        a = 1; b = 0; #10; 
+        a = 1; b = 1; #10; 
+        $finish;  
+    end
+endmodule
+or gate
+module or_gate(a, b, y);
+    input a, b;
+    output y;
+    assign y = a | b; 
+endmodule
+`include "orgate.v"
+module orgate_tb;
+reg a,b;
+wire out;
+orgate a1(a,b,out);
+initial begin
+    $dumpfile("orgate.vcd");
+    $dumpvars(0,orgate_tb);
+    a=0; b=0;
+    #10
+    a=0; b=1;
+    #10
+    a=1; b=0;
+    #10
+    a=1; b=1;
+    #10
+    $finish;
+    end
+endmodule
+Not gate
+module notgate(a,out);
+input a;
+output out;
+not a1(out,a);
+endmodule
+`include "notgate.v"
+module notgate_tb;
+reg a;
+wire out;
+notgate a1(a,out);
+initial begin
+    $dumpfile("notgate.vcd");
+    $dumpvars(0,notgate_tb);
+    a=0;
+    #10
+    a=1; 
+    #10
+    $finish;
+    end
+endmodule
+
