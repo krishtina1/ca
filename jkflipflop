@@ -1,0 +1,35 @@
+module JK(J, K, C, Q, Qc);
+    input J, K, C;
+    output reg Q;
+    output Qc; // Qc is assigned using a continuous assignment
+    always @(posedge C) begin
+        if (J == 0 && K == 0)
+            Q <= Q; // Hold state
+        else if (J == 0 && K == 1)
+            Q <= 0; // Reset
+        else if (J == 1 && K == 0)
+            Q <= 1; // Set
+        else if (J == 1 && K == 1)
+            Q <= ~Q; // Toggle
+    end
+    assign Qc = ~Q; // Continuous assignment for Q complement
+endmodule
+
+`include "JK.v"
+module JK_tb;
+    reg J, K, C;
+    wire Q, Qc;
+    JK a(J, K, C, Q, Qc);
+    initial begin
+        C = 0;
+        forever #1 C = ~C;
+    end
+    initial begin
+        $dumpfile("JK.vcd");
+        $dumpvars(0, JK_tb);
+        J = 1; K = 0;
+        #4 $finish;
+    end
+    always #2 J = ~J;
+    always #3 K = ~K;
+endmodule
