@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 4 // Number of bits
+
+// Function to convert decimal to binary
+void dec_to_bin(int num, int bin[]) {
+    for (int i = N - 1; i >= 0; i--) {
+        bin[i] = num % 2;
+        num /= 2;
+    }
+}
+
+// Function to compute two's complement
+void twos_complement(int bin[], int result[]) {
+    int carry = 1;
+    for (int i = N - 1; i >= 0; i--) {
+        result[i] = (bin[i] == 0) ? 1 : 0;
+    }
+    for (int i = N - 1; i >= 0; i--) {
+        if (result[i] == 1 && carry == 1) {
+            result[i] = 0;
+        } else if (result[i] == 0 && carry == 1) {
+            result[i] = 1;
+            carry = 0;
+        }
+    }
+}
+
+// Function to add two binary numbers
+void add(int a[], int b[], int result[]) {
+    int carry = 0;
+    for (int i = N - 1; i >= 0; i--) {
+        result[i] = a[i] + b[i] + carry;
+        if (result[i] >= 2) {
+            result[i] -= 2;
+            carry = 1;
+        } else {
+            carry = 0;
+        }
+    }
+}
+
+// Function to shift left the binary array
+void shift_left(int rem[], int q[]) {
+    for (int i = 0; i < N - 1; i++) {
+        rem[i] = rem[i + 1];
+    }
+    rem[N - 1] = q[0];
+    for (int i = 0; i < N - 1; i++) {
+        q[i] = q[i + 1];
+    }
+    q[N - 1] = 0;
+}
+
+// Function to display binary array
+void display(int bin[]) {
+    for (int i = 0; i < N; i++) {
+        printf("%d", bin[i]);
+    }
+    printf("\t");
+}
+
+// Function to perform restoring division
+void restoring_division(int dividend, int divisor) {
+    int q[N], m[N], a[N] = {0}, m2[N];
+    dec_to_bin(dividend, q);
+    dec_to_bin(divisor, m);
+    twos_complement(m, m2);
+
+    printf("Dividend: ");
+    display(q);
+    printf("\nDivisor:  ");
+    display(m);
+    printf("\n");
+
+    for (int i = 0; i < N; i++) {
+        printf("Step %d:\n", i + 1);
+        shift_left(a, q);
+        printf("Shifted: ");
+        display(a);
+        display(q);
+        printf("\n");
+
+        add(a, m2, a);
+        printf("Subtract Divisor: ");
+        display(a);
+        display(q);
+        printf("\n");
+
+        if (a[0] == 1) {
+            add(a, m, a);
+            q[N - 1] = 0;
+            printf("Restore:    ");
+            display(a);
+            display(q);
+            printf("\n");
+        } else {
+            q[N - 1] = 1;
+        }
+    }
+
+    printf("\nQuotient: ");
+    display(q);
+    printf("\nRemainder: ");
+    display(a);
+    printf("\n");
+}
+
+int main() {
+    int dividend, divisor;
+    printf("Enter dividend (0 to 15): ");
+    scanf("%d", &dividend);
+    printf("Enter divisor (1 to 15): ");
+    scanf("%d", &divisor);
+
+    if (dividend < 0 || dividend > 15 || divisor <= 0 || divisor > 15) {
+        printf("Invalid input. Numbers must be between 0 and 15.\n");
+        return 1;
+    }
+
+    restoring_division(dividend, divisor);
+    printf("\nName:Krishtina Maharjan Roll:9\n");
+    return 0;
+}
